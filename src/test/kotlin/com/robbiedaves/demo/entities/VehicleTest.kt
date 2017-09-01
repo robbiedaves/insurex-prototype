@@ -1,6 +1,5 @@
 package com.robbiedaves.demo.entities
 
-import com.robbiedaves.insurex.core.PolicyContract
 import org.junit.Assert
 import org.junit.Test
 import java.util.*
@@ -9,15 +8,14 @@ import org.apache.commons.lang3.time.DateUtils
 
 class VehicleTest {
 
-    val calendar = Calendar.getInstance()
-
-    val today = calendar.time
-    val todayPlusSixMonths = DateUtils.addMonths(today, 6)
-    val todayMinusSixMonths = DateUtils.addMonths(today, -6)
+    private val calendar = Calendar.getInstance()
+    private val today = calendar.time
+    private val todayPlusSixMonths = DateUtils.addMonths(today, 6)
+    private val todayMinusSixMonths = DateUtils.addMonths(today, -6)
 
 
     @Test fun `Test Vehicle's date effective - number of seats`() {
-        var contract = PolicyContract(today)
+        var contract = Contract(today)
         val veh = Vehicle(contract)
 
         Assert.assertEquals("Vehicle - number of seats incorrect", 1, veh.numberOfSeats)
@@ -26,22 +24,24 @@ class VehicleTest {
         Assert.assertEquals("Vehicle - number of seats incorrect", 2, veh.numberOfSeats)
 
         // test change dates
-        contract.effDate = todayPlusSixMonths
+        contract.sliceDate = todayPlusSixMonths
         Assert.assertEquals("Vehicle - number of seats incorrect", 2, veh.numberOfSeats)
         veh.numberOfSeats = 4
         Assert.assertEquals("Vehicle - number of seats incorrect", 4, veh.numberOfSeats)
-        contract.effDate = today
+        contract.sliceDate = today
         Assert.assertEquals("Vehicle - number of seats incorrect", 2, veh.numberOfSeats)
-        contract.effDate = todayPlusSixMonths
+        contract.sliceDate = todayPlusSixMonths
         Assert.assertEquals("Vehicle - number of seats incorrect", 4, veh.numberOfSeats)
 
         // Test prior to start of contract
-        contract.effDate = todayMinusSixMonths
-        Assert.assertEquals("Vehicle - number of seats incorrect", 1, veh.numberOfSeats)
+        contract.sliceDate = todayMinusSixMonths
+        Assert.assertEquals("Vehicle - number of seats incorrect", null, veh.numberOfSeats)
+
+        veh.numberOfSeats = null
     }
 
     @Test fun `Test Vehicle's date effective - Make`() {
-        var contract = PolicyContract(today)
+        var contract = Contract(today)
         val veh = Vehicle(contract)
 
         Assert.assertEquals("Vehicle - make incorrect", "Ford", veh.make)
@@ -50,14 +50,18 @@ class VehicleTest {
         Assert.assertEquals("Vehicle - make incorrect", "Lexus", veh.make)
 
         // test change dates
-        contract.effDate = todayPlusSixMonths
+        contract.sliceDate = todayPlusSixMonths
         Assert.assertEquals("Vehicle - make incorrect", "Lexus", veh.make)
         veh.make = "Tesla"
         Assert.assertEquals("Vehicle - make incorrect", "Tesla", veh.make)
-        contract.effDate = today
+        contract.sliceDate = today
         Assert.assertEquals("Vehicle - make incorrect","Lexus", veh.make)
-        contract.effDate = todayPlusSixMonths
+        contract.sliceDate = todayPlusSixMonths
         Assert.assertEquals("Vehicle - make incorrect", "Tesla", veh.make)
+
+        // Test prior to start of contract
+        contract.sliceDate = todayMinusSixMonths
+        Assert.assertEquals("Vehicle - make incorrect", null, veh.make)
     }
 
 }

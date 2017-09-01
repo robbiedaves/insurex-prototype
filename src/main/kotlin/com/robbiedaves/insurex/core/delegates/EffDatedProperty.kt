@@ -1,13 +1,19 @@
-package com.robbiedaves.insurex.core
+package com.robbiedaves.insurex.core.delegates
 
+import com.robbiedaves.insurex.api.EffDatedEntity
 import java.util.*
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-public abstract class EffDatedProperty<T> (val initialValue: T) : ReadWriteProperty<EffDatedEntity, T> {
-    //private var value = initialValue
+public abstract class EffDatedProperty<T> (thisRef: EffDatedEntity, initialValue: T) : ReadWriteProperty<EffDatedEntity, T?> {
+    private val value : TreeMap<Date, T?> = TreeMap<Date, T?>()
 
-    private val value : TreeMap<Date, T> = TreeMap<Date, T>()
+    init {
+        if (initialValue != null) {
+            value.put(thisRef.sliceDate, initialValue)
+        }
+    }
+
 
     /**
      *  The callback which is called before a change to the property value is attempted.
@@ -23,16 +29,18 @@ public abstract class EffDatedProperty<T> (val initialValue: T) : ReadWritePrope
      */
     protected open fun afterChange (property: KProperty<*>? = null, oldValue: T? = null, newValue: T? = null): Unit {}
 
-    public override fun getValue(thisRef: EffDatedEntity, property: KProperty<*>): T {
+    public override fun getValue(thisRef: EffDatedEntity, property: KProperty<*>): T? {
         val valueEntry = this.value.floorEntry(thisRef.sliceDate)
         if (valueEntry == null) {
-            // todo - this is not correct !!!!!
-            return this.initialValue
+            // todo - this is not correct !!!!! We should never allow an eff date prior to start but if we did then error!
+            // todo - however, if we add a field (i.e. from null to a value, then go back before the value was added but after the contract start date, then this should be allowed!
+            //return this.initialValue
+            return null
         }
         return this.value.floorEntry(thisRef.sliceDate).value
     }
 
-    public override fun setValue(thisRef: EffDatedEntity, property: KProperty<*>, value: T) {
+    public override fun setValue(thisRef: EffDatedEntity, property: KProperty<*>, value: T?) {
         val oldValue = this.value.floorEntry(thisRef.sliceDate)
 //        if (!beforeChange(property, oldValue.value, value)) {
 //            return
