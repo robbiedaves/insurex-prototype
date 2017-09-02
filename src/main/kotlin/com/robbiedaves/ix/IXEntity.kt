@@ -4,9 +4,12 @@ import kotlin.properties.ReadWriteProperty
 
 open class IXEntity {
 
-  //  private var properties = IXProperyMap()
-    var propMap = HashMap<String, Any?>()
+    // This is an old version, We needed to use a Delegate Provider to set the default value
+    //  public final inline fun <T> property(default : T) : ReadWriteProperty<IXEntity, T> =
+    //    object : IXProperty<T>(default) { }
+    public final inline fun <T> property(default : T) =  IXDelegateProvider<T>(default)
 
+    var propMap = HashMap<String, Any?>()
 
     fun <T> setProperty(prop : String, value : T) {
         propMap.put(prop, value)
@@ -24,10 +27,8 @@ open class IXEntity {
         }
         println("************************************************************************")
     }
-  //  public final inline fun <T> property(default : T) : ReadWriteProperty<IXEntity, T> =
-    //    object : IXProperty<T>(default) { }
 
-    public final inline fun <T> property(default : T) =  IXDelegateProvider<T>(default)
+
 
 
 }
