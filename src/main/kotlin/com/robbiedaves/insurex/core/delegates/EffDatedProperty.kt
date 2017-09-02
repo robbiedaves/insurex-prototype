@@ -11,6 +11,7 @@ public abstract class EffDatedProperty<T> (thisRef: EffDatedEntity, initialValue
     init {
         if (initialValue != null) {
             value.put(thisRef.sliceDate, initialValue)
+            println("EffDatedProperty ${this} initialised for EffDatedEntity $thisRef")
         }
     }
 
