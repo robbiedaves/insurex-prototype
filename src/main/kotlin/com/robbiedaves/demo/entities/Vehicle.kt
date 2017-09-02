@@ -18,7 +18,6 @@ class Vehicle (val contract: EffDatedContract) : EffDatedEntity by EffDated.enti
     var make : String? by EffDated.property("Ford")
     var model : String? by EffDated.property("Focus")
     var numberOfSeats : Int? by EffDated.property(1)
-    var engineCapacity : Int? by EffDated.property(1666)
     var colour : String? by EffDated.property("Black")
 
     //var drivers : Driver[] = null

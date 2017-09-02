@@ -1,0 +1,166 @@
+Document Design
+===============
+
+Lets take an example
+
+Policy
+NB 01/01/2017
+Add 2 Cars
+(Ford, Focus, Blue)
+(Audi, A4, black)
+
+PC 06/06/2017
+Change Ford Focus to Red
+
+PC 08/08/2017
+Remove Audi
+
+(ignore OOS for now)
+
+
+
+What does the graph look like?
+
+Policy Collection
+{
+	_id : 1
+	pol_id : P00001
+	in_force_contact : 103
+	previous_contact : [101, 102]
+}
+
+//**********************************************************************************
+
+
+Contract Collection
+{
+	_id : 101,
+	start : 01/01/2017,
+	end : 0/01/2018,
+	date : 01/01/2017,
+	status : "BOUND",
+	job : {
+		type : "SUB",
+		text : "Initial Quote"
+	},
+	periods : [
+		{
+			date :01/01/2017,
+			vehicles : [
+				{
+					veh_id : v001,
+					action : add,
+					make : "Ford",
+					model : "Focus"
+					colour : "Blue"
+				},
+				{
+					veh_id : v002,
+					action : add,
+					make : "Audi",
+					model : "A4",
+					colour : "black",
+				}
+			]
+		}
+	]
+}
+
+//**********************************************************************************
+
+{
+	_id : 102,
+	start : 01/01/2017,
+	end : 0/01/2018,
+	date : 06/06/2017,
+	status : "BOUND",
+	job : {
+		type : "POL_CHG",
+		text : "Change colour of Focus"
+	},
+	periods : [
+		{
+			date :01/01/2017,
+			vehicles : [
+				{
+					veh_id : v001,
+					action : add,
+					make : "Ford",
+					model : "Focus"
+					colour : "Blue"
+				},
+				{
+					veh_id : v002,
+					action : add,
+					make : "Audi",
+					model : "A4",
+					colour : "black",
+				}
+			]
+		},
+		{
+			date : 06/06/2017,
+			vehicles : [
+				{
+					veh_id : v001,
+					action : edit,
+					colour : "Red"
+				}
+			]
+		}
+	]
+}
+
+//**********************************************************************************
+
+{
+	_id : 103,
+	start : 01/01/2017,
+	end : 0/01/2018,
+	date : 08/08/2017,
+	status : "BOUND",
+	job : {
+		type : "POL_CHG",
+		text : "Remove Audi"
+	},
+	periods : [
+		{
+			date :01/01/2017,
+			vehicles : [
+				{
+					veh_id : v001,
+					action : add,
+					make : "Ford",
+					model : "Focus"
+					colour : "Blue"
+				},
+				{
+					veh_id : v002,
+					action : add,
+					make : "Audi",
+					model : "A4",
+					colour : "black",
+				}
+			]
+		},
+		{
+			date : 06/06/2017,
+			vehicles : [
+				{
+					veh_id : v001,
+					action : edit,
+					colour : "Red"
+				}
+			]
+		},
+		{
+			date : 08/08/2017,
+			vehicles : [
+				{
+					veh_id : v002,
+					action : del,
+				}
+			]
+		}
+	]
+}
